@@ -2,12 +2,9 @@ package com.emas93.agendadortarefas.infrastructure.security;
 
 import com.emas93.agendadortarefas.business.dto.UsuarioDTO;
 import com.emas93.agendadortarefas.infrastructure.client.UsuarioClient;
-import com.emas93.agendadortarefas.infrastructure.entity.Usuario;
-import com.emas93.agendadortarefas.infrastructure.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
