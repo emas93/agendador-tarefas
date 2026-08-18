@@ -13,24 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres:16
+      mongodb:
+        image: mongo:8
         env:
-          POSTGRES_DB: db_usuario
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ci_postgres_password
+          MONGO_INITDB_DATABASE: db_agendador
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: ci_mongo_password
         ports:
-          - 5432:5432
+          - 27017:27017
         options: >-
-          --health-cmd="pg_isready -U postgres -d db_usuario"
+          --health-cmd="mongosh --quiet --username root --password ci_mongo_password --authenticationDatabase admin --eval \"db.adminCommand('ping').ok\""
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
 
     env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/db_usuario
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: ci_postgres_password
+      SPRING_DATA_MONGODB_URI: mongodb://root:ci_mongo_password@localhost:27017/db_agendador?authSource=admin
 
     permissions:
       contents: read
@@ -47,6 +45,9 @@ jobs:
 
       - name: Configurar Gradle
         uses: gradle/actions/setup-gradle@v6
+
+      - name: Dar permissão ao Gradle Wrapper
+        run: chmod +x gradlew
 
       - name: Compilar e testar
         run: ./gradlew build
@@ -66,6 +67,9 @@ jobs:
         with:
           java-version: "21"
           distribution: temurin
+
+      - name: Dar permissão ao Gradle Wrapper
+        run: chmod +x gradlew
 
       - name: Gerar e enviar gráfico de dependências
         uses: gradle/actions/dependency-submission@v6
